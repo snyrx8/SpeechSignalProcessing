@@ -2,10 +2,9 @@ import torch
 import torchaudio
 import torchaudio.functional as F
 import torchaudio.transforms as T
-
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Preparation of data and helper functions.
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 import math
 import time
 import librosa
@@ -33,6 +32,7 @@ def _get_inverse_log_freq(freq, sample_rate, offset):
     """Find the time where the given frequency is given by _get_log_freq"""
     half = sample_rate // 2
     return sample_rate * (math.log(1 + freq / offset) / math.log(1 + half / offset))
+
 
 def _get_freq_ticks(sample_rate, offset, f_max):
     # Given the original sample rate used for generating the sweep,
@@ -62,7 +62,7 @@ def get_sine_sweep(sample_rate, offset=DEFAULT_OFFSET):
 
 def plot_sweep(waveform, sample_rate, title, max_sweep_rate=SWEEP_MAX_SAMPLE_RATE, offset=DEFAULT_OFFSET):
     x_ticks = [100, 500, 1000, 5000, 10000, 20000, max_sweep_rate // 2]
-    y_ticks = [1000, 5000, 10000, 20000, sample_rate//2]
+    y_ticks = [1000, 5000, 10000, 20000, sample_rate // 2]
 
     time, freq = _get_freq_ticks(max_sweep_rate, offset, sample_rate // 2)
     freq_x = [f if f in x_ticks and f <= max_sweep_rate // 2 else None for f in freq]
@@ -76,7 +76,7 @@ def plot_sweep(waveform, sample_rate, title, max_sweep_rate=SWEEP_MAX_SAMPLE_RAT
     axis.set_ylabel('Waveform Frequency (Hz)')
     axis.xaxis.grid(True, alpha=0.67)
     axis.yaxis.grid(True, alpha=0.67)
-    figure.suptitle(f'{title} (sample rate: {sample_rate} Hz)')
+    figure.suptitle('{title} (sample rate: {sample_rate} Hz)')
     plt.show(block=True)
 
 
@@ -104,7 +104,7 @@ def plot_specgram(waveform, sample_rate, title="Spectrogram", xlim=None):
     for c in range(num_channels):
         axes[c].specgram(waveform[c], Fs=sample_rate)
         if num_channels > 1:
-            axes[c].set_ylabel(f'Channel {c+1}')
+            axes[c].set_ylabel('Channel {c+1}')
         if xlim:
             axes[c].set_xlim(xlim)
     figure.suptitle(title)
@@ -145,4 +145,4 @@ def benchmark_resample(
             librosa.resample(waveform_np, sample_rate, resample_rate, res_type=librosa_type)
         elapsed = time.time() - begin
         return elapsed / iters
-        
+
